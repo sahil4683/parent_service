@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ms.entity.User;
 import com.ms.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -27,32 +30,40 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
+    	log.info("User : {}",user);
         User createdUser = userService.createUser(user);
+        log.info("createdUser : {}",createdUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User user) {
+    	log.info("User : {}, UserId : {}",user,userId);
         user.setId(userId);
         User updatedUser = userService.updateUser(user);
+        log.info("updatedUser : {}",updatedUser);
         return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+    	log.info("UserId : {}",userId);
         userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+    	log.info("UserId : {}",userId);
         User user = userService.getUserById(userId);
+        log.info("User : {}",user);
         return ResponseEntity.ok(user);
     }
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
+        log.info("users : {}",users);
         return ResponseEntity.ok(users);
     }
 }

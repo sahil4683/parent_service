@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,15 +35,19 @@ class UserControllerTest {
 		MockitoAnnotations.openMocks(this);
 	}
 
+	static User user;
+
+	@BeforeAll
+	static void setupUser() {
+		user = new User(1l, "sahil", "sahil@email.com");
+	}
+
 	@Test
 	void testCreateUser() {
 		// Arrange
-		User user = new User();
 		when(userService.createUser(any(User.class))).thenReturn(user);
-
 		// Act
 		ResponseEntity<User> responseEntity = userController.createUser(user);
-
 		// Assert
 		assertNotNull(responseEntity);
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
@@ -54,8 +59,6 @@ class UserControllerTest {
 	void testUpdateUser() {
 		// Arrange
 		Long userId = 1L;
-		User user = new User();
-		user.setId(userId);
 		when(userService.updateUser(any(User.class))).thenReturn(user);
 
 		// Act
@@ -86,7 +89,6 @@ class UserControllerTest {
 	void testGetUserById() {
 		// Arrange
 		Long userId = 1L;
-		User user = new User();
 		when(userService.getUserById(userId)).thenReturn(user);
 
 		// Act

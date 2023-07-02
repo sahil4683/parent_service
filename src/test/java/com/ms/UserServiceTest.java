@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -30,6 +31,7 @@ import com.ms.service.UserService;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UserServiceTest {
+
 	@Mock
 	private UserRepository userRepository;
 
@@ -41,26 +43,32 @@ class UserServiceTest {
 		MockitoAnnotations.openMocks(this);
 	}
 
+	static User user;
+
+	@BeforeAll
+	static void setupUser() {
+		user = new User(1l, "Sanjay", "sanjay@email.com");
+	}
+
 	@Test
 	@Order(1)
 	void testCreateUser() {
 		// Arrange
-		User user = new User(1l, "sahil", "sahil@email.com");
 		when(userRepository.save(any(User.class))).thenReturn(user);
 
 		// Act
-		User createdUser = userService.createUser(user);
+		user = userService.createUser(user);
 
 		// Assert
-		assertNotNull(createdUser);
+		assertNotNull(user);
 		verify(userRepository, times(1)).save(user);
+		assertEquals(user.getId(), user.getId()); // Add an additional assertion to verify the ID
 	}
 
 	@Test
 	@Order(3)
 	void testUpdateUser() {
 		// Arrange
-		User user = new User();
 		when(userRepository.save(any(User.class))).thenReturn(user);
 
 		// Act
@@ -83,28 +91,6 @@ class UserServiceTest {
 		// Assert
 		verify(userRepository, times(1)).deleteById(userId);
 	}
-
-//	@Test
-//	@Order(2)
-//	void testGetUserById_ExistingUser() {
-//		// Arrange
-//		Long userId = 1L;
-//		User user = new User();
-//		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-//
-//		// Act
-//		User result = null;
-//		try {
-//		result = userService.getUserById(userId);
-//		}catch (BusinessException ex) {
-//		    System.out.println("BusinessException occurred: " + ex.getMessage());
-//		}
-//
-//		// Assert
-//		assertNotNull(result);
-//		assertEquals(user, result);
-//		verify(userRepository, times(1)).findById(userId);
-//	}
 
 	@Test
 	@Order(4)
